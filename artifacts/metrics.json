@@ -1,0 +1,39 @@
+{
+  "selected_model": "logistic_regression",
+  "validation_model_comparison": {
+    "logistic_regression": {
+      "roc_auc": 0.7384523809523809,
+      "average_precision": 0.5224679853846237,
+      "accuracy": 0.455,
+      "bad_precision": 0.3532934131736527,
+      "bad_recall": 0.9833333333333333,
+      "bad_f2": 0.7248157248157249
+    },
+    "random_forest": {
+      "roc_auc": 0.7248809523809524,
+      "average_precision": 0.5004497096410027,
+      "accuracy": 0.585,
+      "bad_precision": 0.4122137404580153,
+      "bad_recall": 0.9,
+      "bad_f2": 0.7277628032345014
+    }
+  },
+  "test_metrics": {
+    "roc_auc": 0.7676190476190475,
+    "average_precision": 0.6181255408747548,
+    "accuracy": 0.425,
+    "bad_precision": 0.33727810650887574,
+    "bad_recall": 0.95,
+    "bad_f2": 0.6968215158924206,
+    "confusion_matrix": [
+      [
+        28,
+        112
+      ],
+      [
+        3,
+        57
+      ]
+    ]
+  }
+}

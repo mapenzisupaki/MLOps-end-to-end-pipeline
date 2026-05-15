@@ -1,0 +1,5 @@
+{
+  "demographic_parity_ratio_minimum": 0.8,
+  "demographic_parity_difference_maximum": 0.1,
+  "equalized_odds_difference_maximum": 0.1
+}

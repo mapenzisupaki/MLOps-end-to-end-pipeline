@@ -1,0 +1,72 @@
+{
+  "Sex": {
+    "groups": [
+      {
+        "group": "female",
+        "n": 61,
+        "approval_rate": 0.04918032786885246,
+        "true_positive_rate": 1.0,
+        "false_positive_rate": 0.926829268292683
+      },
+      {
+        "group": "male",
+        "n": 139,
+        "approval_rate": 0.2014388489208633,
+        "true_positive_rate": 0.925,
+        "false_positive_rate": 0.7474747474747475
+      }
+    ],
+    "demographic_parity_difference": 0.15225852105201085,
+    "demographic_parity_ratio": 0.24414519906323184,
+    "equalized_odds_difference": 0.17935452081793546
+  },
+  "Age": {
+    "groups": [
+      {
+        "group": "18-24",
+        "n": 39,
+        "approval_rate": 0.05128205128205128,
+        "true_positive_rate": 0.9473684210526315,
+        "false_positive_rate": 0.95
+      },
+      {
+        "group": "25-34",
+        "n": 66,
+        "approval_rate": 0.13636363636363635,
+        "true_positive_rate": 1.0,
+        "false_positive_rate": 0.7954545454545454
+      },
+      {
+        "group": "35-44",
+        "n": 47,
+        "approval_rate": 0.2127659574468085,
+        "true_positive_rate": 0.9090909090909091,
+        "false_positive_rate": 0.75
+      },
+      {
+        "group": "45-54",
+        "n": 27,
+        "approval_rate": 0.18518518518518517,
+        "true_positive_rate": 0.8333333333333334,
+        "false_positive_rate": 0.8095238095238095
+      },
+      {
+        "group": "55-64",
+        "n": 16,
+        "approval_rate": 0.25,
+        "true_positive_rate": 1.0,
+        "false_positive_rate": 0.7333333333333333
+      },
+      {
+        "group": "65+",
+        "n": 5,
+        "approval_rate": 0.2,
+        "true_positive_rate": 1.0,
+        "false_positive_rate": 0.75
+      }
+    ],
+    "demographic_parity_difference": 0.19871794871794873,
+    "demographic_parity_ratio": 0.20512820512820512,
+    "equalized_odds_difference": 0.21666666666666667
+  }
+}
