@@ -5,3 +5,4 @@ __pycache__/
 .pdsenv/
 .env
 .DS_Store
+.pytest_tmp*/
