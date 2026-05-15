@@ -1,0 +1,46 @@
+{
+  "selected_model": "xgboost",
+  "model_family": "XGBClassifier",
+  "optimization_focus": [
+    "bad_recall",
+    "bad_f2",
+    "roc_auc"
+  ],
+  "scale_pos_weight": 2.3333333333333335,
+  "validation_metrics": {
+    "roc_auc": 0.714404761904762,
+    "average_precision": 0.5155276808517718,
+    "accuracy": 0.57,
+    "bad_precision": 0.4015151515151515,
+    "bad_recall": 0.8833333333333333,
+    "bad_f2": 0.7123655913978495,
+    "confusion_matrix": [
+      [
+        61,
+        79
+      ],
+      [
+        7,
+        53
+      ]
+    ]
+  },
+  "test_metrics": {
+    "roc_auc": 0.7775,
+    "average_precision": 0.6019505879288841,
+    "accuracy": 0.565,
+    "bad_precision": 0.39849624060150374,
+    "bad_recall": 0.8833333333333333,
+    "bad_f2": 0.710455764075067,
+    "confusion_matrix": [
+      [
+        60,
+        80
+      ],
+      [
+        7,
+        53
+      ]
+    ]
+  }
+}

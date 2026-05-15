@@ -1,0 +1,11 @@
+{
+  "data_path": "data/raw/german_credit_data.csv",
+  "target_column": "Risk",
+  "id_column": "Unnamed: 0",
+  "positive_label": "bad",
+  "negative_label": "good",
+  "protected_attributes": ["Age", "Sex"],
+  "age_bins": [18, 25, 35, 45, 55, 65, 100],
+  "age_labels": ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"],
+  "missing_account_label": "No Account"
+}
