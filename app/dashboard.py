@@ -22,129 +22,175 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-POWERBI_CSS = """
+DASHBOARD_CSS = """
 <style>
+:root {
+    --navy: #1f2a3a;
+    --navy-2: #26364b;
+    --blue: #1368ce;
+    --text: #232733;
+    --muted: #6b7280;
+    --panel: #ffffff;
+    --line: #dde3ec;
+    --canvas: #f7f9fc;
+    --green: #18a058;
+    --red: #d64545;
+    --amber: #cc7a00;
+}
 [data-testid="stAppViewContainer"] {
-    background: #f3f4f7;
+    background: var(--canvas);
 }
 [data-testid="stHeader"] {
-    background: rgba(243, 244, 247, 0.92);
+    background: rgba(247, 249, 252, 0.96);
 }
 [data-testid="stSidebar"] {
-    background: #ffffff;
-    border-right: 1px solid #d7dae2;
+    background: var(--navy);
+    border-right: 0;
+}
+[data-testid="stSidebar"] * {
+    color: #edf3fb !important;
+}
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p {
+    color: #edf3fb !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] > div,
+[data-testid="stSidebar"] [data-baseweb="input"] > div {
+    background: #33465f !important;
+    border-color: #475b73 !important;
+    border-radius: 7px !important;
+}
+[data-testid="stSidebar"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] input {
+    color: #ffffff !important;
+}
+[data-testid="stSidebar"] [data-testid="stSlider"] [role="slider"] {
+    background: var(--blue) !important;
+    border-color: var(--blue) !important;
 }
 .block-container {
-    padding-top: 1.2rem;
+    padding-top: 1rem;
     padding-bottom: 2rem;
-    max-width: 1500px;
+    max-width: 1680px;
 }
 .report-hero {
-    background: linear-gradient(90deg, #111827 0%, #1f2937 54%, #2563eb 100%);
+    background: linear-gradient(90deg, #1f2a3a 0%, #23405f 50%, #1368ce 100%);
     color: white;
-    padding: 22px 26px;
+    padding: 24px 28px;
     border-radius: 8px;
-    margin-bottom: 14px;
-    border: 1px solid #111827;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 22px rgba(31, 42, 58, 0.16);
 }
 .report-hero h1 {
-    font-size: 30px;
+    color: #ffffff;
+    font-size: 31px;
     line-height: 1.15;
     margin: 0;
     letter-spacing: 0;
 }
 .report-hero p {
-    margin: 7px 0 0 0;
-    color: #dbeafe;
+    color: #d8e7ff;
+    margin: 8px 0 0 0;
     font-size: 14px;
 }
 .report-status {
     display: inline-block;
     margin-top: 12px;
-    padding: 5px 9px;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.12);
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.14);
     color: #ffffff;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
 }
 .kpi-card {
-    background: #ffffff;
-    border: 1px solid #d9dde7;
-    border-left: 5px solid #2563eb;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--blue);
     border-radius: 8px;
-    padding: 14px 16px;
-    min-height: 112px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    padding: 16px 17px;
+    min-height: 118px;
+    box-shadow: 0 3px 10px rgba(31, 42, 58, 0.07);
 }
-.kpi-card.warning {
-    border-left-color: #d97706;
-}
-.kpi-card.success {
-    border-left-color: #059669;
-}
-.kpi-card.risk {
-    border-left-color: #dc2626;
-}
+.kpi-card.warning { border-top-color: var(--amber); }
+.kpi-card.success { border-top-color: var(--green); }
+.kpi-card.risk { border-top-color: var(--red); }
 .kpi-label {
-    color: #64748b;
+    color: #5e6c83;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0;
     margin-bottom: 8px;
 }
 .kpi-value {
     color: #111827;
-    font-size: 30px;
-    font-weight: 800;
+    font-size: 31px;
+    font-weight: 850;
     line-height: 1;
 }
 .kpi-subtitle {
-    color: #64748b;
+    color: #69778c;
     font-size: 12px;
     margin-top: 9px;
 }
-.section-title {
-    color: #111827;
+.visual-title {
+    color: var(--text);
     font-size: 16px;
     font-weight: 800;
-    margin: 4px 0 8px 0;
+    margin: 2px 0 8px 0;
 }
-.small-note {
-    color: #64748b;
+.visual-note {
+    color: var(--muted);
     font-size: 12px;
 }
 .badge {
     display: inline-block;
     padding: 4px 8px;
-    border-radius: 4px;
-    background: #e0ecff;
-    color: #1d4ed8;
+    border-radius: 5px;
+    background: #e7f0ff;
+    color: #155cb8;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 800;
 }
 [data-testid="stMetric"] {
     background: #ffffff;
-    border: 1px solid #d9dde7;
+    border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 12px 14px;
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    padding: 13px 14px;
+    box-shadow: 0 2px 8px rgba(31, 42, 58, 0.06);
+}
+[data-testid="stMetric"] label,
+[data-testid="stMetric"] [data-testid="stMetricLabel"] {
+    color: #5e6c83 !important;
+}
+[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: #111827 !important;
 }
 [data-testid="stTabs"] [role="tablist"] {
-    gap: 6px;
+    gap: 5px;
+    border-bottom: 1px solid var(--line);
 }
 [data-testid="stTabs"] button[role="tab"] {
     background: #ffffff;
-    border: 1px solid #d9dde7;
+    border: 1px solid var(--line);
+    border-bottom: 0;
     border-radius: 6px 6px 0 0;
-    color: #334155;
+    color: #435067;
     padding: 9px 14px;
 }
 [data-testid="stTabs"] button[aria-selected="true"] {
-    background: #1f2937;
+    background: var(--navy);
     color: #ffffff;
-    border-color: #1f2937;
+    border-color: var(--navy);
+}
+[data-testid="stTabs"] button[aria-selected="true"] p {
+    color: #ffffff !important;
+}
+[data-testid="stDataFrame"] {
+    border-radius: 8px;
 }
 </style>
 """
@@ -174,6 +220,10 @@ def risk_label(value: str) -> str:
     return "Bad risk" if value.lower() == "bad" else "Good risk"
 
 
+def all_options(values: list[str]) -> list[str]:
+    return ["All"] + sorted([str(value) for value in values])
+
+
 def render_kpi(label: str, value: str, subtitle: str, tone: str = "") -> None:
     tone_class = f" {tone}" if tone else ""
     st.markdown(
@@ -188,6 +238,12 @@ def render_kpi(label: str, value: str, subtitle: str, tone: str = "") -> None:
     )
 
 
+def filter_equals(frame: pd.DataFrame, column: str, value: str) -> pd.DataFrame:
+    if value == "All":
+        return frame
+    return frame[frame[column].astype(str) == value]
+
+
 def show_confusion_matrix(matrix: list[list[int]]) -> None:
     if not matrix:
         st.info("Confusion matrix artifact is not available yet.")
@@ -197,18 +253,27 @@ def show_confusion_matrix(matrix: list[list[int]]) -> None:
         index=["Actual good", "Actual bad"],
         columns=["Predicted good", "Predicted bad"],
     )
-    st.dataframe(frame, use_container_width=True, height=143)
+    st.dataframe(frame, use_container_width=True, height=145)
 
 
 def show_metric_bars(metrics: dict[str, float]) -> None:
-    names = ["roc_auc", "average_precision", "accuracy", "bad_precision", "bad_recall", "bad_f2"]
-    values = {name: metrics.get(name, 0.0) for name in names}
-    frame = pd.DataFrame.from_dict(values, orient="index", columns=["score"])
-    st.bar_chart(frame, y="score", height=300)
+    labels = {
+        "roc_auc": "ROC-AUC",
+        "average_precision": "Avg precision",
+        "accuracy": "Accuracy",
+        "bad_precision": "Bad precision",
+        "bad_recall": "Bad recall",
+        "bad_f2": "Bad F2",
+    }
+    frame = pd.DataFrame(
+        {"score": [metrics.get(name, 0.0) for name in labels]},
+        index=list(labels.values()),
+    )
+    st.bar_chart(frame, y="score", height=330)
 
 
 def show_fairness_attribute(attribute: str, payload: dict) -> None:
-    st.markdown(f"<div class='section-title'>{attribute} fairness monitor</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='visual-title'>{attribute} fairness monitor</div>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
     c1.metric("Parity ratio", f"{payload.get('demographic_parity_ratio', 0):.3f}")
     c2.metric("Parity difference", f"{payload.get('demographic_parity_difference', 0):.3f}")
@@ -219,28 +284,21 @@ def show_fairness_attribute(attribute: str, payload: dict) -> None:
         st.info("No group-level fairness rows available.")
         return
     chart_frame = groups.set_index("group")[["approval_rate", "true_positive_rate", "false_positive_rate"]]
-    st.bar_chart(chart_frame, height=290)
+    st.bar_chart(chart_frame, height=320)
     st.dataframe(groups, use_container_width=True, height=210)
 
 
 def build_sidebar_filters(raw: pd.DataFrame) -> pd.DataFrame:
-    st.sidebar.markdown("### Report slicers")
-    st.sidebar.caption("Filters apply to the overview and data pages.")
-    selected_sex = st.sidebar.multiselect(
-        "Sex",
-        sorted(raw["Sex"].dropna().unique()),
-        default=sorted(raw["Sex"].dropna().unique()),
-    )
-    selected_housing = st.sidebar.multiselect(
-        "Housing",
-        sorted(raw["Housing"].dropna().unique()),
-        default=sorted(raw["Housing"].dropna().unique()),
-    )
-    selected_purpose = st.sidebar.multiselect(
-        "Purpose",
-        sorted(raw["Purpose"].dropna().unique()),
-        default=sorted(raw["Purpose"].dropna().unique()),
-    )
+    st.sidebar.markdown("## Showcase")
+    st.sidebar.caption("German Credit Risk Platform")
+    st.sidebar.divider()
+    st.sidebar.markdown("### Filters")
+
+    sex = st.sidebar.selectbox("Sex", all_options(raw["Sex"].dropna().unique().tolist()))
+    housing = st.sidebar.selectbox("Housing", all_options(raw["Housing"].dropna().unique().tolist()))
+    purpose = st.sidebar.selectbox("Purpose", all_options(raw["Purpose"].dropna().unique().tolist()))
+    risk = st.sidebar.selectbox("Risk", all_options(raw["Risk"].dropna().map(risk_label).unique().tolist()))
+
     credit_range = st.sidebar.slider(
         "Credit amount",
         int(raw["Credit amount"].min()),
@@ -253,12 +311,16 @@ def build_sidebar_filters(raw: pd.DataFrame) -> pd.DataFrame:
         int(raw["Duration"].max()),
         (int(raw["Duration"].min()), int(raw["Duration"].max())),
     )
-    return raw[
-        raw["Sex"].isin(selected_sex)
-        & raw["Housing"].isin(selected_housing)
-        & raw["Purpose"].isin(selected_purpose)
-        & raw["Credit amount"].between(*credit_range)
-        & raw["Duration"].between(*duration_range)
+
+    filtered = raw.copy()
+    filtered = filter_equals(filtered, "Sex", sex)
+    filtered = filter_equals(filtered, "Housing", housing)
+    filtered = filter_equals(filtered, "Purpose", purpose)
+    if risk != "All":
+        filtered = filtered[filtered["Risk"].map(risk_label) == risk]
+    return filtered[
+        filtered["Credit amount"].between(*credit_range)
+        & filtered["Duration"].between(*duration_range)
     ]
 
 
@@ -272,16 +334,16 @@ def applicant_form(defaults: pd.DataFrame) -> pd.DataFrame | None:
         cols = st.columns(3)
         with cols[0]:
             age = st.slider("Age", 18, 100, 35)
-            sex = st.selectbox("Sex", sorted(defaults["Sex"].dropna().unique().tolist()))
+            sex = st.selectbox("Applicant sex", sorted(defaults["Sex"].dropna().unique().tolist()))
             job = st.selectbox("Job", sorted(defaults["Job"].dropna().unique().tolist()), index=2)
         with cols[1]:
-            housing = st.selectbox("Housing", sorted(defaults["Housing"].dropna().unique().tolist()))
+            housing = st.selectbox("Applicant housing", sorted(defaults["Housing"].dropna().unique().tolist()))
             saving = st.selectbox("Saving accounts", sorted(defaults["Saving accounts"].fillna("No Account").unique().tolist()))
             checking = st.selectbox("Checking account", sorted(defaults["Checking account"].fillna("No Account").unique().tolist()))
         with cols[2]:
             credit_amount = st.number_input("Credit amount", min_value=1, max_value=50000, value=5000, step=250)
             duration = st.slider("Duration", 1, 84, 24)
-            purpose = st.selectbox("Purpose", sorted(defaults["Purpose"].dropna().unique().tolist()))
+            purpose = st.selectbox("Applicant purpose", sorted(defaults["Purpose"].dropna().unique().tolist()))
 
         submitted = st.form_submit_button("Score applicant")
 
@@ -308,7 +370,7 @@ def applicant_form(defaults: pd.DataFrame) -> pd.DataFrame | None:
 
 
 def main() -> None:
-    st.markdown(POWERBI_CSS, unsafe_allow_html=True)
+    st.markdown(DASHBOARD_CSS, unsafe_allow_html=True)
 
     raw = load_dataset()
     metrics = load_json_artifact(str(METRICS_PATH))
@@ -346,36 +408,35 @@ def main() -> None:
     )
 
     with overview:
-        left, middle, right = st.columns([1.1, 1, 1])
+        left, middle = st.columns([0.95, 1.05])
         with left:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Risk distribution</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Risk distribution</div>", unsafe_allow_html=True)
                 risk_counts = filtered["Risk"].map(risk_label).value_counts().to_frame("count")
-                st.bar_chart(risk_counts, y="count", height=280)
+                st.bar_chart(risk_counts, y="count", height=350)
         with middle:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Average credit by purpose</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Average credit by purpose</div>", unsafe_allow_html=True)
                 purpose_frame = filtered.groupby("Purpose", dropna=False)["Credit amount"].mean().sort_values().to_frame("avg_credit_amount")
-                st.bar_chart(purpose_frame, y="avg_credit_amount", height=280)
-        with right:
-            with st.container(border=True):
-                st.markdown("<div class='section-title'>Portfolio snapshot</div>", unsafe_allow_html=True)
-                snapshot = filtered[["Age", "Sex", "Housing", "Credit amount", "Duration", "Risk"]].head(12)
-                st.dataframe(snapshot, use_container_width=True, height=280)
+                st.bar_chart(purpose_frame, y="avg_credit_amount", height=350)
+        with st.container(border=True):
+            st.markdown("<div class='visual-title'>Portfolio snapshot</div>", unsafe_allow_html=True)
+            snapshot = filtered[["Age", "Sex", "Housing", "Credit amount", "Duration", "Purpose", "Risk"]].head(15)
+            st.dataframe(snapshot, use_container_width=True, height=360)
 
     with performance:
         left, right = st.columns([1.2, 0.8])
         with left:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Model scorecard</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Model scorecard</div>", unsafe_allow_html=True)
                 show_metric_bars(test_metrics)
         with right:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Confusion matrix</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Confusion matrix</div>", unsafe_allow_html=True)
                 show_confusion_matrix(test_metrics.get("confusion_matrix", []))
-                st.markdown("<span class='small-note'>Rows are actual outcomes. Columns are predictions.</span>", unsafe_allow_html=True)
+                st.markdown("<span class='visual-note'>Rows are actual outcomes. Columns are predictions.</span>", unsafe_allow_html=True)
         with st.container(border=True):
-            st.markdown("<div class='section-title'>Validation metrics payload</div>", unsafe_allow_html=True)
+            st.markdown("<div class='visual-title'>Validation metrics payload</div>", unsafe_allow_html=True)
             st.json(metrics.get("validation_metrics", {}))
 
     with fairness_tab:
@@ -386,14 +447,14 @@ def main() -> None:
                 show_fairness_attribute(attribute, payload)
 
     with scoring:
-        left, right = st.columns([0.95, 1.05])
+        left, right = st.columns([0.9, 1.1])
         with left:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Applicant slicer and scoring form</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Applicant scoring form</div>", unsafe_allow_html=True)
                 scored_frame = applicant_form(raw)
         with right:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Decision and explainability output</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Decision and explainability output</div>", unsafe_allow_html=True)
                 if scored_frame is None:
                     st.info("Score an applicant to see probability, recommendation, and SHAP drivers.")
                 else:
@@ -403,28 +464,28 @@ def main() -> None:
                     c2.metric("Predicted bad", int(result["predicted_bad"]))
                     c3.metric("Action", result["recommended_action"])
                     drivers = pd.DataFrame(result.get("explanation", {}).get("top_features", []))
-                    st.markdown("<div class='section-title'>Top SHAP drivers</div>", unsafe_allow_html=True)
+                    st.markdown("<div class='visual-title'>Top SHAP drivers</div>", unsafe_allow_html=True)
                     if not drivers.empty:
-                        st.bar_chart(drivers.set_index("feature")[["shap_value"]], y="shap_value", height=280)
+                        st.bar_chart(drivers.set_index("feature")[["shap_value"]], y="shap_value", height=310)
                         st.dataframe(drivers, use_container_width=True, height=230)
                     with st.expander("Raw scoring response"):
                         st.json(result)
 
     with data:
         with st.container(border=True):
-            st.markdown("<div class='section-title'>Filtered applicant table</div>", unsafe_allow_html=True)
-            st.dataframe(filtered, use_container_width=True, height=450)
+            st.markdown("<div class='visual-title'>Filtered applicant table</div>", unsafe_allow_html=True)
+            st.dataframe(filtered, use_container_width=True, height=520)
 
     with deployment:
         left, right = st.columns(2)
         with left:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>Local services</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>Local services</div>", unsafe_allow_html=True)
                 st.code("uvicorn api.main:app --host 127.0.0.1 --port 8000", language="powershell")
                 st.code("streamlit run app/dashboard.py --server.port 8501", language="powershell")
         with right:
             with st.container(border=True):
-                st.markdown("<div class='section-title'>GCP deployment path</div>", unsafe_allow_html=True)
+                st.markdown("<div class='visual-title'>GCP deployment path</div>", unsafe_allow_html=True)
                 st.write("Use `deployment/gcp/README.md` for Artifact Registry and Cloud Run deployment.")
                 st.write(f"Project root: `{PROJECT_ROOT}`")
 
