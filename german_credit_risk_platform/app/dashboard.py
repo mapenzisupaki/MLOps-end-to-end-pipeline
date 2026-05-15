@@ -1,10 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+
+PROJECT_ROOT_FOR_IMPORTS = Path(__file__).resolve().parents[1]
+SRC_PATH = PROJECT_ROOT_FOR_IMPORTS / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
 
 from credit_risk.config import ARTIFACTS_DIR, METRICS_PATH, PROJECT_ROOT
 from credit_risk.data import load_raw_data
@@ -492,3 +498,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
