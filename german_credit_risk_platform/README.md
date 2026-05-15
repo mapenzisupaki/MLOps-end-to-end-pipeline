@@ -1,4 +1,4 @@
-﻿# German Credit Risk Platform
+# German Credit Risk Platform
 
 A production-minded machine learning and MLOps scaffold for retail banking credit risk assessment using the German Credit Risk dataset. The system predicts whether a loan applicant is a `Good` or `Bad` credit risk and is designed around explainability, fairness auditing, FastAPI serving, Docker packaging, and a GCP deployment path.
 
@@ -66,35 +66,133 @@ pip install -r requirements.txt
 Train the model and generate artifacts:
 
 ```bash
-$env:PYTHONPATH = "src"
+$env:PYTHONPATH = ".;src"
 python -m credit_risk.train
 ```
 
 Run tests:
 
 ```bash
-$env:PYTHONPATH = "src"
+$env:PYTHONPATH = ".;src"
 pytest -q
 ```
 
 Run the FastAPI app:
 
 ```bash
-$env:PYTHONPATH = "src"
-uvicorn api.main:app --reload
+$env:PYTHONPATH = ".;src"
+uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 Run the interactive dashboard:
 
 ```bash
-$env:PYTHONPATH = "src"
-streamlit run app/dashboard.py --server.port 8501
+$env:PYTHONPATH = ".;src"
+streamlit run app/dashboard.py --server.address 127.0.0.1 --server.port 8501
 ```
 
 Build the serving container:
 
 ```bash
 docker build -f deployment/Dockerfile -t german-credit-risk-api .
+```
+
+
+## Run From GitHub
+
+GitHub stores the source code and runs CI tests, but it does not directly run the Streamlit dashboard or FastAPI server from the repository page. To view the apps, clone the repository and run them locally, or deploy them to public hosting links.
+
+Clone the repository:
+
+```bash
+git clone https://github.com/mapenzisupaki/MLOps-end-to-end-pipeline.git
+cd MLOps-end-to-end-pipeline/german_credit_risk_platform
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
+# macOS/Linux
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Train the model before using `/predict`:
+
+```bash
+# Windows PowerShell
+$env:PYTHONPATH = ".;src"
+python -m credit_risk.train
+
+# macOS/Linux
+export PYTHONPATH=.:src
+python -m credit_risk.train
+```
+
+Open FastAPI locally:
+
+```bash
+uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+FastAPI local URLs:
+
+- Swagger UI: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
+- Prediction endpoint: `http://127.0.0.1:8000/predict`
+
+Open the Streamlit dashboard locally:
+
+```bash
+streamlit run app/dashboard.py --server.address 127.0.0.1 --server.port 8501
+```
+
+Streamlit local URL:
+
+- Dashboard: `http://127.0.0.1:8501`
+
+
+## Hiring Manager Preview Links
+
+Use this section after deployment so reviewers can open the project without cloning the repository.
+
+| Experience | Public Link | What to Review |
+| --- | --- | --- |
+| Streamlit dashboard | `TODO: add deployed Streamlit app URL` | Interactive portfolio dashboard, model metrics, fairness audit views, applicant scoring, and SHAP drivers. |
+| FastAPI Swagger docs | `TODO: add deployed FastAPI /docs URL` | API schema, `/health`, `/predict`, request validation, and real-time prediction response. |
+| FastAPI health endpoint | `TODO: add deployed FastAPI /health URL` | Liveness and model-readiness status. |
+| Stakeholder PowerPoint | [`docs/presentations/german-credit-risk-stakeholder-briefing.pptx`](docs/presentations/german-credit-risk-stakeholder-briefing.pptx) | Executive summary, architecture, fairness, explainability, dashboard, and deployment story. |
+
+Streamlit Cloud deployment settings:
+
+- Streamlit account: `https://share.streamlit.io/user/mapenzisupaki`
+- Repository: `mapenzisupaki/MLOps-end-to-end-pipeline`
+- Branch: `main`
+- Main file path: `german_credit_risk_platform/app/dashboard.py`
+- App URL after deployment: `https://<your-app-name>.streamlit.app`
+
+Recommended public hosting:
+
+- Streamlit dashboard: Streamlit Community Cloud.
+- FastAPI: GCP Cloud Run, Render, Railway, Azure Container Apps, or AWS App Runner.
+- Production API: prefer a container platform with authentication, logging, and monitoring.
+
+After deployment, replace the `TODO` values above with the public URLs. Example final links:
+
+```text
+Streamlit dashboard: https://german-credit-risk-platform.streamlit.app
+FastAPI Swagger docs: https://german-credit-risk-api-xxxxx.run.app/docs
+FastAPI health endpoint: https://german-credit-risk-api-xxxxx.run.app/health
 ```
 
 ## Interactive Dashboard
@@ -164,6 +262,43 @@ The project includes custom fairness metrics for `Age` and `Sex`:
 
 `Age` is converted into configured age bands for audit reporting. Missing `Saving accounts` and `Checking account` values are explicitly encoded as `No Account` to avoid silently dropping meaningful financial access signals.
 
+
+## Deploy From GitHub
+
+Recommended repository pattern for multiple MLOps projects:
+
+```text
+MLOps-end-to-end-pipeline/
+  .github/
+    workflows/
+      german-credit-risk-platform-ci.yml
+      future-project-ci.yml
+  german_credit_risk_platform/
+  another_mlops_project/
+```
+
+Keep GitHub Actions workflows at the repository root in `.github/workflows/`. Use path filters so each workflow only runs when files for its project change.
+
+For this project, the API container is defined at:
+
+```text
+deployment/Dockerfile
+```
+
+A typical GCP Cloud Run flow is:
+
+```bash
+gcloud builds submit --tag REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/german-credit-risk-api
+
+gcloud run deploy german-credit-risk-api \
+  --image REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY/german-credit-risk-api \
+  --platform managed \
+  --region REGION \
+  --allow-unauthenticated
+```
+
+Replace `REGION`, `PROJECT_ID`, and `REPOSITORY` with your GCP values. Add authentication before using the API for real credit decisions.
+
 ## GCP Deployment Path
 
 The repository includes documentation for a GCP deployment workflow:
@@ -180,6 +315,7 @@ This scaffold does not deploy anything automatically.
 ## Current Status
 
 This is a production-grade scaffold, not a certified production deployment. Before release, run training, review generated metrics, approve the fairness audit, harden environment-specific secrets/configuration, and deploy through a controlled CI/CD workflow.
+
 
 
 
