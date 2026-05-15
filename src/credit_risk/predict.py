@@ -8,6 +8,7 @@ import pandas as pd
 
 from credit_risk.config import MODEL_PATH, THRESHOLD_PATH
 from credit_risk.data import normalize_account_columns
+from credit_risk.explain import explain_single_prediction
 
 
 def model_artifacts_ready() -> bool:
@@ -27,7 +28,11 @@ def load_threshold(path: Path = THRESHOLD_PATH) -> float:
     return float(payload["threshold"])
 
 
-def score_dataframe(df: pd.DataFrame, model=None, threshold: float | None = None) -> pd.DataFrame:
+def score_dataframe(
+    df: pd.DataFrame,
+    model=None,
+    threshold: float | None = None,
+) -> pd.DataFrame:
     active_model = model if model is not None else load_model()
     active_threshold = threshold if threshold is not None else load_threshold()
     normalized = normalize_account_columns(df)
@@ -36,5 +41,28 @@ def score_dataframe(df: pd.DataFrame, model=None, threshold: float | None = None
     output = normalized.copy()
     output["bad_loan_probability"] = probability
     output["predicted_bad"] = prediction
-    output["recommended_action"] = output["predicted_bad"].map({0: "approve_or_fast_track", 1: "review_or_decline"})
+    output["recommended_action"] = output["predicted_bad"].map(
+        {0: "approve_or_fast_track", 1: "review_or_decline"}
+    )
     return output
+
+
+def score_single_application(
+    df: pd.DataFrame,
+    model=None,
+    threshold: float | None = None,
+    explanation_top_n: int = 5,
+) -> dict[str, object]:
+    if len(df) != 1:
+        raise ValueError("Single-application scoring requires exactly one row.")
+    active_model = model if model is not None else load_model()
+    active_threshold = threshold if threshold is not None else load_threshold()
+    normalized = normalize_account_columns(df)
+    scored = score_dataframe(normalized, model=active_model, threshold=active_threshold)
+    record = scored.to_dict(orient="records")[0]
+    record["explanation"] = explain_single_prediction(
+        active_model,
+        normalized,
+        top_n=explanation_top_n,
+    )
+    return record

@@ -12,6 +12,7 @@ A bank must decide whether to approve or reject each loan application. The most 
 - F2-score for the `Bad` class
 - AUC-ROC
 - transparent threshold selection based on false negative and false positive costs
+- real-time SHAP explanations for each API prediction
 
 Raw accuracy is reported but is not the primary optimization target.
 
@@ -91,8 +92,8 @@ docker build -f deployment/Dockerfile -t german-credit-risk-api .
 
 ## API
 
-- `GET /health`: liveness and model readiness
-- `POST /predict`: single applicant inference
+- `GET /health`: liveness, model readiness, and explainability status
+- `POST /predict`: single applicant inference with SHAP-based local explanations
 
 Example request:
 
@@ -107,6 +108,27 @@ Example request:
   "Credit_amount": 5000,
   "Duration": 24,
   "Purpose": "car"
+}
+```
+
+## Explainable AI
+
+The serving model uses `XGBClassifier` and returns real-time SHAP values in the `/predict` response. The `explanation` object uses XGBoost native TreeSHAP contributions through `pred_contribs=True`, then returns the method, model family, base value, and top transformed feature drivers ranked by absolute SHAP value. Positive SHAP values increase predicted bad-loan risk; negative values decrease it.
+
+Example response fields include:
+
+```json
+{
+  "bad_loan_probability": 0.61,
+  "predicted_bad": 1,
+  "recommended_action": "review_or_decline",
+  "explanation": {
+    "method": "xgboost_tree_shap_pred_contribs",
+    "model_family": "XGBClassifier",
+    "top_features": [
+      {"feature": "numeric__Duration", "shap_value": 0.22, "impact": "increases_risk"}
+    ]
+  }
 }
 ```
 
@@ -138,3 +160,5 @@ This scaffold does not deploy anything automatically.
 ## Current Status
 
 This is a production-grade scaffold, not a certified production deployment. Before release, run training, review generated metrics, approve the fairness audit, harden environment-specific secrets/configuration, and deploy through a controlled CI/CD workflow.
+
+

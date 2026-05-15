@@ -3,10 +3,8 @@ from __future__ import annotations
 import json
 
 import joblib
-from sklearn.base import clone
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
+from xgboost import XGBClassifier
 
 from credit_risk.config import (
     ARTIFACTS_DIR,
@@ -25,37 +23,30 @@ from credit_risk.features import build_preprocessor
 MODEL_CONFIG = load_json_config("model_config.json")
 
 
-def build_candidate_models(preprocessor) -> dict[str, Pipeline]:
+def build_xgboost_pipeline(preprocessor, scale_pos_weight: float) -> Pipeline:
     random_state = MODEL_CONFIG["random_state"]
-    return {
-        "logistic_regression": Pipeline(
-            steps=[
-                ("preprocessor", clone(preprocessor)),
-                (
-                    "model",
-                    LogisticRegression(
-                        max_iter=2000,
-                        class_weight="balanced",
-                        random_state=random_state,
-                    ),
+    return Pipeline(
+        steps=[
+            ("preprocessor", preprocessor),
+            (
+                "model",
+                XGBClassifier(
+                    objective="binary:logistic",
+                    eval_metric="logloss",
+                    n_estimators=250,
+                    max_depth=3,
+                    learning_rate=0.05,
+                    subsample=0.9,
+                    colsample_bytree=0.9,
+                    min_child_weight=2,
+                    reg_lambda=1.0,
+                    scale_pos_weight=scale_pos_weight,
+                    random_state=random_state,
+                    n_jobs=1,
                 ),
-            ]
-        ),
-        "random_forest": Pipeline(
-            steps=[
-                ("preprocessor", clone(preprocessor)),
-                (
-                    "model",
-                    RandomForestClassifier(
-                        n_estimators=300,
-                        min_samples_leaf=5,
-                        class_weight="balanced",
-                        random_state=random_state,
-                    ),
-                ),
-            ]
-        ),
-    }
+            ),
+        ]
+    )
 
 
 def train() -> None:
@@ -66,31 +57,21 @@ def train() -> None:
     X, y = prepare_modeling_table(raw)
     split = split_data(X, y)
     preprocessor = build_preprocessor(split.X_train)
+    positive_count = int(split.y_train.sum())
+    negative_count = int(len(split.y_train) - positive_count)
+    scale_pos_weight = negative_count / positive_count if positive_count else 1.0
 
-    best_name = ""
-    best_model = None
-    best_auc = -1.0
-    comparison: dict[str, dict[str, float]] = {}
+    model = build_xgboost_pipeline(preprocessor, scale_pos_weight)
+    model.fit(split.X_train, split.y_train)
 
-    for name, model in build_candidate_models(preprocessor).items():
-        model.fit(split.X_train, split.y_train)
-        probabilities = model.predict_proba(split.X_valid)[:, 1]
-        threshold = optimize_threshold(split.y_valid, probabilities)["threshold"]
-        metrics = calculate_metrics(split.y_valid, probabilities, threshold)
-        comparison[name] = {
-            key: value for key, value in metrics.items() if isinstance(value, float)
-        }
-        if float(metrics["roc_auc"]) > best_auc:
-            best_name = name
-            best_model = model
-            best_auc = float(metrics["roc_auc"])
-
-    if best_model is None:
-        raise RuntimeError("No model was trained.")
-
-    valid_probabilities = best_model.predict_proba(split.X_valid)[:, 1]
+    valid_probabilities = model.predict_proba(split.X_valid)[:, 1]
     threshold_info = optimize_threshold(split.y_valid, valid_probabilities)
-    test_probabilities = best_model.predict_proba(split.X_test)[:, 1]
+    validation_metrics = calculate_metrics(
+        split.y_valid,
+        valid_probabilities,
+        threshold_info["threshold"],
+    )
+    test_probabilities = model.predict_proba(split.X_test)[:, 1]
     test_metrics = calculate_metrics(
         split.y_test,
         test_probabilities,
@@ -103,12 +84,15 @@ def train() -> None:
         threshold_info["threshold"],
     )
 
-    joblib.dump(best_model, MODEL_PATH)
+    joblib.dump(model, MODEL_PATH)
     METRICS_PATH.write_text(
         json.dumps(
             {
-                "selected_model": best_name,
-                "validation_model_comparison": comparison,
+                "selected_model": "xgboost",
+                "model_family": "XGBClassifier",
+                "optimization_focus": ["bad_recall", "bad_f2", "roc_auc"],
+                "scale_pos_weight": scale_pos_weight,
+                "validation_metrics": validation_metrics,
                 "test_metrics": test_metrics,
             },
             indent=2,
