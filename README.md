@@ -84,11 +84,31 @@ $env:PYTHONPATH = "src"
 uvicorn api.main:app --reload
 ```
 
+Run the interactive dashboard:
+
+```bash
+$env:PYTHONPATH = "src"
+streamlit run app/dashboard.py --server.port 8501
+```
+
 Build the serving container:
 
 ```bash
 docker build -f deployment/Dockerfile -t german-credit-risk-api .
 ```
+
+## Interactive Dashboard
+
+The Streamlit dashboard provides:
+
+- portfolio overview and risk distribution
+- applicant-level data exploration with filters
+- model performance metrics and confusion matrix
+- fairness audit views for `Age` and `Sex`
+- single-applicant scoring with XGBoost SHAP top drivers
+- local and GCP deployment command references
+
+Open it locally at `http://127.0.0.1:8501` after starting Streamlit.
 
 ## API
 
@@ -160,5 +180,6 @@ This scaffold does not deploy anything automatically.
 ## Current Status
 
 This is a production-grade scaffold, not a certified production deployment. Before release, run training, review generated metrics, approve the fairness audit, harden environment-specific secrets/configuration, and deploy through a controlled CI/CD workflow.
+
 
 
