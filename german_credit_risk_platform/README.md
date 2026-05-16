@@ -168,7 +168,7 @@ Use this section after deployment so reviewers can open the project without clon
 
 | Experience | Public Link | What to Review |
 | --- | --- | --- |
-| Streamlit dashboard | `TODO: add deployed Streamlit app URL` | Interactive portfolio dashboard, model metrics, fairness audit views, applicant scoring, and SHAP drivers. |
+| Streamlit dashboard | [https://credit-risk-platform.streamlit.app/](https://credit-risk-platform.streamlit.app/) | Interactive portfolio dashboard, model metrics, fairness audit views, applicant scoring, and SHAP drivers. |
 | FastAPI Swagger docs | `TODO: add deployed FastAPI /docs URL` | API schema, `/health`, `/predict`, request validation, and real-time prediction response. |
 | FastAPI health endpoint | `TODO: add deployed FastAPI /health URL` | Liveness and model-readiness status. |
 | Stakeholder PowerPoint | [`docs/presentations/german-credit-risk-stakeholder-briefing.pptx`](docs/presentations/german-credit-risk-stakeholder-briefing.pptx) | Executive summary, architecture, fairness, explainability, dashboard, and deployment story. |
@@ -190,7 +190,7 @@ Recommended public hosting:
 After deployment, replace the `TODO` values above with the public URLs. Example final links:
 
 ```text
-Streamlit dashboard: https://german-credit-risk-platform.streamlit.app
+Streamlit dashboard: https://credit-risk-platform.streamlit.app/
 FastAPI Swagger docs: https://german-credit-risk-api-xxxxx.run.app/docs
 FastAPI health endpoint: https://german-credit-risk-api-xxxxx.run.app/health
 ```
@@ -315,6 +315,7 @@ This scaffold does not deploy anything automatically.
 ## Current Status
 
 This is a production-grade scaffold, not a certified production deployment. Before release, run training, review generated metrics, approve the fairness audit, harden environment-specific secrets/configuration, and deploy through a controlled CI/CD workflow.
+
 
 
 
