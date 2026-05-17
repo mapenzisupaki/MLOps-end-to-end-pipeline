@@ -1,6 +1,6 @@
 # German Credit Risk Platform
 
-A production-minded machine learning and MLOps scaffold for retail banking credit risk assessment using the German Credit Risk dataset. The system predicts whether a loan applicant is a `Good` or `Bad` credit risk and is designed around explainability, fairness auditing, FastAPI serving, Docker packaging, and a GCP deployment path.
+A production-ready machine learning and MLOps scaffold project for retail banking credit risk assessment using the German Credit Risk dataset. The system predicts whether a loan applicant is a `Good` or `Bad` credit risk and is designed around explainability, fairness auditing, FastAPI serving, Docker packaging, and a GCP deployment path.
 
 This folder is a clean production rebuild. The earlier `german_credit_risk_modeling` project remains a prototype/reference.
 
